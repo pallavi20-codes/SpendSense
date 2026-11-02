@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SpendSense - Smart Expense Tracker for students.">
+    <title>SpendSense | Smart Expense Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="logo">
+            <span class="logo-icon">S</span>
+            <span>SpendSense</span>
+        </div>
+
+        <div class="nav-actions">
+            <span class="welcome-text">Your money, your control.</span>
+            <button id="themeToggle" class="theme-btn" type="button">
+                🌙 Dark Mode
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Page Heading -->
+        <section class="page-heading">
+            <div>
+                <p class="eyebrow">PERSONAL FINANCE DASHBOARD</p>
+                <h1>Good money habits start here.</h1>
+                <p>Track your spending, understand your habits and stay on budget.</p>
+            </div>
+        </section>
+
+        <!-- Dashboard Summary -->
+        <section class="summary-grid">
+
+            <article class="summary-card">
+                <p>Total Spent</p>
+                <h2 id="totalSpent">₹0.00</h2>
+                <span>All recorded expenses</span>
+            </article>
+
+            <article class="summary-card">
+                <p>This Month</p>
+                <h2 id="monthlySpent">₹0.00</h2>
+                <span>Current month's spending</span>
+            </article>
+
+            <article class="summary-card">
+                <p>Total Transactions</p>
+                <h2 id="expenseCount">0</h2>
+                <span>Expenses recorded</span>
+            </article>
+
+            <article class="summary-card">
+                <p>Monthly Budget</p>
+                <h2 id="budgetAmount">₹5,000.00</h2>
+                <span id="budgetStatus">Set your spending limit</span>
+            </article>
+
+        </section>
+
+        <!-- Main Dashboard Layout -->
+        <section class="dashboard-grid">
+
+            <!-- Add Expense Form -->
+            <section class="panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">NEW TRANSACTION</p>
+                        <h2>Add an Expense</h2>
+                    </div>
+                </div>
+
+                <form id="expenseForm">
+
+                    <div class="form-group">
+                        <label for="expenseTitle">Expense Name</label>
+                        <input
+                            type="text"
+                            id="expenseTitle"
+                            placeholder="e.g. Lunch, Bus ticket"
+                            maxlength="60"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expenseAmount">Amount (₹)</label>
+                        <input
+                            type="number"
+                            id="expenseAmount"
+                            placeholder="Enter amount"
+                            min="0.01"
+                            step="0.01"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expenseCategory">Category</label>
+                        <select id="expenseCategory" required>
+                            <option value="">Select category</option>
+                            <option value="Food">Food</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Education">Education</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Health">Health</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="expenseDate">Date</label>
+                        <input type="date" id="expenseDate" required>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="primary-btn">
+                        + Add Expense
+                    </button>
+
+                    <button type="button" id="cancelEdit" class="secondary-btn" hidden>
+                        Cancel Editing
+                    </button>
+
+                </form>
+            </section>
+
+            <!-- Spending Insights -->
+            <section class="panel">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">YOUR SPENDING PATTERN</p>
+                        <h2>Category Breakdown</h2>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+
+                <div id="categorySummary" class="category-summary">
+                    <p>No expenses recorded yet.</p>
+                </div>
+            </section>
+
+        </section>
+
+        <!-- Expense History -->
+        <section class="panel expense-panel">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">TRANSACTION HISTORY</p>
+                    <h2>Your Expenses</h2>
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="filter-bar">
+
+                <input
+                    type="search"
+                    id="searchExpense"
+                    placeholder="Search expenses..."
+                >
+
+                <select id="filterCategory">
+                    <option value="all">All Categories</option>
+                    <option value="Food">Food</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Education">Education</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Health">Health</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <input type="month" id="filterMonth">
+
+                <select id="sortExpenses">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="high">Highest Amount</option>
+                    <option value="low">Lowest Amount</option>
+                </select>
+
+            </div>
+
+            <!-- Export Data -->
+            <div class="export-actions">
+                <button id="exportCSV" class="secondary-btn" type="button">
+                    Export CSV
+                </button>
+
+                <button id="exportJSON" class="secondary-btn" type="button">
+                    Export JSON
+                </button>
+            </div>
+
+            <!-- Dynamic Expense List -->
+            <div id="expenseList" class="expense-list">
+                <p class="empty-message">No expenses yet. Add your first expense!</p>
+            </div>
+
+        </section>
+
+        <!-- Budget Controls -->
+        <section class="panel budget-panel">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">MONTHLY MONEY GOAL</p>
+                    <h2>Manage Your Budget</h2>
+                </div>
+            </div>
+
+            <form id="budgetForm" class="budget-form">
+                <div class="form-group">
+                    <label for="budgetInput">Monthly Budget (₹)</label>
+                    <input
+                        type="number"
+                        id="budgetInput"
+                        min="1"
+                        step="0.01"
+                        placeholder="Enter monthly budget"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    Save Budget
+                </button>
+            </form>
+
+            <div class="budget-progress">
+                <div class="progress-track">
+                    <div id="budgetProgress" class="progress-fill"></div>
+                </div>
+                <p id="budgetMessage">Your spending progress will appear here.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>SpendSense © 2026 | Built to make every rupee count.</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>
